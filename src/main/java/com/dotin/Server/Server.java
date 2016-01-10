@@ -20,7 +20,6 @@ public class Server {
     public static void main(String[] args) throws FileNotFoundExcep, FileFormatException, IOException, InterruptedException {
 
         String serverPort = MyFileParser.getJsonObject().get("port").toString();
-
         ServerSocket socket = new ServerSocket(Integer.valueOf(serverPort));
         System.out.println("Server listening on port: " + serverPort);
         while (true) {

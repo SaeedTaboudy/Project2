@@ -1,0 +1,42 @@
+Jan 10, 2016 4:26:11 PM com.dotin.Parser.Logger logging
+INFO: Server listening on port: 8080
+Jan 10, 2016 4:26:15 PM com.dotin.Parser.Logger logging
+INFO: Connecting to Socket[addr=/127.0.0.1,port=8080,localport=64236]
+Jan 10, 2016 4:26:15 PM com.dotin.Parser.Logger logging
+INFO: Connecting to Socket[addr=/127.0.0.1,port=8080,localport=64237]
+Jan 10, 2016 4:26:15 PM com.dotin.Parser.Logger logging
+INFO: Server listening on port: 8080
+Jan 10, 2016 4:26:15 PM com.dotin.Parser.Logger logging
+INFO: Loading deposit file.
+Jan 10, 2016 4:26:15 PM com.dotin.Parser.Logger logging
+INFO: Accepted connection...
+Jan 10, 2016 4:26:16 PM com.dotin.Parser.Logger logging
+INFO: Data gathered from client....
+Jan 10, 2016 4:26:16 PM com.dotin.Parser.Logger logging
+INFO: 33227781  Result: Ok
+Jan 10, 2016 4:26:16 PM com.dotin.Parser.Logger logging
+INFO: 35527439  Result: Failed. Illegal request... 
+Jan 10, 2016 4:26:16 PM com.dotin.Parser.Logger logging
+INFO: Server listening on port: 8080
+Jan 10, 2016 4:26:16 PM com.dotin.Parser.Logger logging
+INFO: Loading deposit file.
+Jan 10, 2016 4:26:16 PM com.dotin.Parser.Logger logging
+INFO: Accepted connection...
+Jan 10, 2016 4:26:16 PM com.dotin.Parser.Logger logging
+INFO: Connecting to Socket[addr=/127.0.0.1,port=8080,localport=64238]
+Jan 10, 2016 4:26:16 PM com.dotin.Parser.Logger logging
+INFO: Server listening on port: 8080
+Jan 10, 2016 4:26:16 PM com.dotin.Parser.Logger logging
+INFO: Loading deposit file.
+Jan 10, 2016 4:26:16 PM com.dotin.Parser.Logger logging
+INFO: Accepted connection...
+Jan 10, 2016 4:26:16 PM com.dotin.Parser.Logger logging
+INFO: Data gathered from client....
+Jan 10, 2016 4:26:16 PM com.dotin.Parser.Logger logging
+INFO: 33227781  Result: Ok
+Jan 10, 2016 4:26:16 PM com.dotin.Parser.Logger logging
+INFO: 35527439  Result: Failed. Illegal request... 
+Jan 10, 2016 4:26:21 PM com.dotin.Parser.Logger logging
+INFO: Connection reset
+Jan 10, 2016 4:26:22 PM com.dotin.Parser.Logger logging
+INFO: Connection refused: connect

@@ -1,10 +1,10 @@
 package com.dotin.Client;
 
-import  com.dotin.Parser.Logger;
-import  com.dotin.Parser.MyFileParser;
-import  com.dotin.deposits.Transaction;
-import  com.dotin.exceptions.FileFormatException;
-import  com.dotin.exceptions.FileNotFoundExcep;
+import com.dotin.Parser.Logger;
+import com.dotin.Parser.MyFileParser;
+import com.dotin.deposits.Transaction;
+import com.dotin.exceptions.FileFormatException;
+import com.dotin.exceptions.FileNotFoundExcep;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -42,7 +42,7 @@ public class ClientThread extends Thread {
     public ClientThread() throws IOException, FileNotFoundExcep, FileFormatException {
         terminalInitializing(TERMINAL_ADDRESS);
         getTransactions(TERMINAL_ADDRESS);
-        fos = new FileOutputStream(RESPONSE_PATH);
+        fos = new FileOutputStream(RESPONSE_PATH, true);
         bos = new BufferedOutputStream(fos);
         start();
 
@@ -50,6 +50,7 @@ public class ClientThread extends Thread {
 
     @Override
     public void run() {
+        List<Transaction> resultList = new ArrayList<>();
         synchronized (this) {
             int transactionListSize = transactionList.size();
             try {
@@ -65,20 +66,25 @@ public class ClientThread extends Thread {
                 }
                 //----
                 outputStream.reset();
-                List<Transaction> resultList = new ArrayList<>();
+
                 //read the transaction result from server and save them to response.xml file
                 for (int i = 0; i < transactionListSize; i++) {
                     inStream = new ObjectInputStream(socket.getInputStream());
                     resultList.add((Transaction) inStream.readObject());
-                    System.out.println(resultList.size());
                 }
-                response(resultList);
             } catch (IOException e) {
                 Logger.log("ClientThread", e.getMessage());
             } catch (ClassNotFoundException e) {
                 Logger.log("ClientThread", e.getMessage());
             }
+            try {
+                response(resultList);
+            } catch (FileNotFoundException e) {
+                Logger.log("ClientThread", e.getMessage());
+            }
         }
+
+
     }
 
     /*
