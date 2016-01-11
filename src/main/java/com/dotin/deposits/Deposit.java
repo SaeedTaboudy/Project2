@@ -4,6 +4,8 @@ package com.dotin.deposits;
  * @author Saeed Taboudy
  */
 
+import com.dotin.Parser.customLogger;
+
 import java.math.BigDecimal;
 
 
@@ -86,6 +88,40 @@ public class Deposit {
             return true;
         else
             return false;
+    }
+
+    public void depositAction(Deposit deposit, Transaction transaction) {
+        if (deposit != null) {
+            synchronized (this) {
+                if (transaction.getDepositId().equals(deposit.getId())) {
+                    BigDecimal depositBalance = deposit.getInitialBalance().add(transaction.getAmount());
+                    BigDecimal withdrawBalance = deposit.getInitialBalance().subtract(transaction.getAmount());
+                    if (transaction.getType().equals("deposit") && deposit.getUpperBound().compareTo(depositBalance) == 1) {
+                        deposit.setDepositBalance(depositBalance);
+                        transaction.setResult("Ok");
+                        System.out.println(transaction.getDepositId() + "----" + transaction.getResult());
+                        customLogger.log("CommandExecutor", transaction.getDepositId() + "  Result: Ok");
+                    } else if (transaction.getType().equals("withdraw") && deposit.getInitialBalance()
+                            .add(deposit.getInitialBalance()).compareTo(transaction.getAmount()) == 1) {
+                        deposit.setDepositBalance(withdrawBalance);
+                        transaction.setResult("Ok");
+                        customLogger.log("CommandExecutor", transaction.getDepositId() + "  Result: Ok");
+                        System.out.println(transaction.getDepositId() + "----" + transaction.getResult());
+
+                    } else {
+                        transaction.setResult("Failed");
+                        customLogger.log("CommandExecutor", transaction.getDepositId() + "  Result: Failed. Illegal request... ");
+                        System.out.println(transaction.getDepositId() + "----" + transaction.getResult());
+                    }
+                }
+            }
+        } else {
+            transaction.setResult("Failed");
+            //  customLogger.log("CommandExecutor", transaction.getDepositId() + "  Result: Failed. deposit not found... ");
+            System.out.println(transaction.getDepositId() + "----" + transaction.getResult());
+        }
+
+        //  return deposit;
     }
 
 }

@@ -36,10 +36,12 @@ public class MyFileParser {
             JSONObject jsonObject = (JSONObject) obj;
             return jsonObject;
         } catch (IOException  e) {
-            Logger.log("MyFileParser", e.getMessage());
+            e.printStackTrace();
+      //      customLogger.log("MyFileParser", e.getMessage());
             throw new FileNotFoundExcep();
         } catch (ParseException e) {
-            Logger.log("MyFileParser", e.getMessage());
+            e.printStackTrace();
+            //customLogger.log("MyFileParser", e.getMessage());
             throw new FileFormatException();
         }
     }
@@ -57,10 +59,10 @@ public class MyFileParser {
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             doc = dBuilder.parse(inputFile);
         } catch (ParserConfigurationException | org.xml.sax.SAXException e) {
-            Logger.log("", "Terminal Xml file format exception....");
+            customLogger.log("", "Terminal Xml file format exception....");
             throw new FileFormatException();
         } catch (IOException e) {
-            Logger.log("", "Terminal Xml file not found....");
+            customLogger.log("", "Terminal Xml file not found....");
             throw new FileNotFoundExcep();
         }
         doc.getDocumentElement().normalize();

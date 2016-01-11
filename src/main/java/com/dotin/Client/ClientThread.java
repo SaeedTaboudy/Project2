@@ -1,6 +1,5 @@
 package com.dotin.Client;
 
-import com.dotin.Parser.Logger;
 import com.dotin.Parser.MyFileParser;
 import com.dotin.deposits.Transaction;
 import com.dotin.exceptions.FileFormatException;
@@ -27,8 +26,7 @@ public class ClientThread extends Thread {
     public Socket socket = null;
     private String serverIp;
     private int serverPort;
-    private ObjectOutputStream outputStream = null;
-    private OutputStream transactionCounter = null;
+
     private static final String TERMINAL_ADDRESS = "src//main//resources//terminal.xml";
     private List<Transaction> transactionList = new ArrayList<>();
     private ObjectInputStream inStream = null;
@@ -50,41 +48,35 @@ public class ClientThread extends Thread {
 
     @Override
     public void run() {
+        ObjectOutputStream outputStream;
+        OutputStream transactionCounter;
         List<Transaction> resultList = new ArrayList<>();
         synchronized (this) {
             int transactionListSize = transactionList.size();
             try {
                 socket = new Socket(serverIp, serverPort);
-                Logger.log("ClientThread", "Connecting to " + socket.toString());
                 transactionCounter = socket.getOutputStream();
                 //send transactions number to server
                 transactionCounter.write(transactionList.size());
                 //send transaction objects to sever
-                for (int i = 0; i < transactionListSize; i++) {
+                for (Transaction transaction : transactionList) {
                     outputStream = new ObjectOutputStream(socket.getOutputStream());
-                    outputStream.writeObject(transactionList.get(i));
+                    outputStream.writeObject(transaction);
                 }
-                //----
-                outputStream.reset();
-
                 //read the transaction result from server and save them to response.xml file
                 for (int i = 0; i < transactionListSize; i++) {
                     inStream = new ObjectInputStream(socket.getInputStream());
                     resultList.add((Transaction) inStream.readObject());
                 }
-            } catch (IOException e) {
-                Logger.log("ClientThread", e.getMessage());
-            } catch (ClassNotFoundException e) {
-                Logger.log("ClientThread", e.getMessage());
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
             }
             try {
                 response(resultList);
             } catch (FileNotFoundException e) {
-                Logger.log("ClientThread", e.getMessage());
+                e.printStackTrace();
             }
         }
-
-
     }
 
     /*
@@ -113,10 +105,10 @@ public class ClientThread extends Thread {
             Transaction transaction = new Transaction();
             Node nNode = transactionTag.item(i);
             Element eElement = (Element) nNode;
-            transaction.setAmount(BigDecimal.valueOf(Double.valueOf(eElement.getAttribute("amount").toString())));
-            transaction.setType(eElement.getAttribute("type").toString());
-            transaction.setId(Long.valueOf(eElement.getAttribute("id").toString()));
-            transaction.setDepositId(BigDecimal.valueOf(Double.valueOf(eElement.getAttribute("deposit").toString())));
+            transaction.setAmount(BigDecimal.valueOf(Double.valueOf(eElement.getAttribute("amount"))));
+            transaction.setType(eElement.getAttribute("type"));
+            transaction.setId(Long.valueOf(eElement.getAttribute("id")));
+            transaction.setDepositId(BigDecimal.valueOf(Double.valueOf(eElement.getAttribute("deposit"))));
             transactionList.add(transaction);
         }
         return transactionList;

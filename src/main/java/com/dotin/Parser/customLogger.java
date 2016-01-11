@@ -2,13 +2,14 @@ package com.dotin.Parser;
 
 import java.io.IOException;
 import java.util.logging.FileHandler;
+import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
 /**
  * @author Saeed Taboudy
  */
-public class Logger {
-    public static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger("MyLog");
+public class customLogger {
+    public static final Logger logger = java.util.logging.Logger.getLogger("MyLog");
     public static String LOG_PATH = "src//main//resources//MyLog.log";
     public static FileHandler fh;
 
@@ -25,8 +26,8 @@ public class Logger {
         }
     }
 
-    public synchronized static void log(String cls, String str) {
-        Logger logger = new Logger();
+    public static void log(String cls, String str) {
+        customLogger logger = new customLogger();
         logger.logging(cls, str);
 
     }

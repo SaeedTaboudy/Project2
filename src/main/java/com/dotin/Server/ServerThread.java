@@ -1,7 +1,7 @@
 package com.dotin.Server;
 
-import com.dotin.Parser.Logger;
 import com.dotin.Parser.MyFileParser;
+import com.dotin.Parser.customLogger;
 import com.dotin.deposits.Deposit;
 import com.dotin.deposits.Transaction;
 import com.dotin.exceptions.FileFormatException;
@@ -26,49 +26,46 @@ import java.util.Map;
 public class ServerThread extends Thread {
 
     private static Socket socket = null;
-    private ObjectInputStream inStream = null;
-    private InputStream counter = null;
-    List<Transaction> transactionList = new ArrayList<Transaction>();
+
+
+    List<Transaction> transactionList = new ArrayList<>();
     Map<String, Deposit> depositList = new HashMap<>();
-    private ObjectOutputStream outputResult = null;
 
 
     public ServerThread(Socket client) {
-        this.socket = client;
+        socket = client;
     }
 
     public void run() {
+        ObjectInputStream inStream;
+        InputStream counter;
+        ObjectOutputStream outputResult;
         //Read from Client
         try {
             getServerDepositInfo();
-            Logger.log("ServerThread", "Accepted connection...");
+            customLogger.log("ServerThread", "Accepted connection...");
             counter = socket.getInputStream();
             //First of all we read transactions count from client
-            int transactionCount = Integer.valueOf(counter.read());
+            int transactionCount =counter.read();
             //In this step we receive transactions from terminals
             for (int i = 0; i < transactionCount; i++) {
                 inStream = new ObjectInputStream(socket.getInputStream());
                 transactionList.add((Transaction) inStream.readObject());
             }
-            Logger.log("ServerThread", "Data gathered from client....");
+            customLogger.log("ServerThread", "Data gathered from client....");
             //We use this method to take appropriate action on transactions
-            CommandExecutor.run(transactionList, depositList);
-
+          //  TransactionHandler.executeQuery(transactionList, depositList);
+            new TransactionHandler().executeQuery(transactionList, depositList);
             for (Transaction transaction : transactionList) {
                 outputResult = new ObjectOutputStream(socket.getOutputStream());
                 outputResult.writeObject(transaction);
             }
             //----
-        } catch (IOException e) {
+        } catch (IOException | ClassNotFoundException | FileFormatException
+                | FileNotFoundExcep e) {
             e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (FileFormatException e) {
-            e.printStackTrace();
-        } catch (FileNotFoundExcep fileNotFoundExcep) {
-            fileNotFoundExcep.printStackTrace();
         }
-        //  }
+
     }
 
     /*
@@ -77,12 +74,12 @@ public class ServerThread extends Thread {
      */
     private void getServerDepositInfo() throws FileNotFoundExcep, FileFormatException {
 
-        Logger.log("ServerThread", "Loading deposit file.");
+        // customLogger.log("ServerThread", "Loading deposit file.");
         JSONObject jsonObject = MyFileParser.getJsonObject();
         JSONArray jsonArray = (JSONArray) jsonObject.get("deposits");
-        for (int i = 0; i < jsonArray.size(); i++) {
+        for (Object iteratoObject: jsonArray) {
             Deposit deposit = new Deposit();
-            jsonObject = (JSONObject) jsonArray.get(i);
+            jsonObject = (JSONObject)iteratoObject;
             deposit.setCustomer((String) jsonObject.get("customer"));
             deposit.setId(BigDecimal.valueOf(Double.valueOf(jsonObject.get("id").toString())));
             deposit.setInitialBalance(BigDecimal.valueOf(Double.parseDouble(jsonObject.get("initialBalance").toString())));
